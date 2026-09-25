@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple User App</title>
+</head>
+
+<body>
+
+    <h1>Simple User App</h1>
+
+    <h2>Add User</h2>
+
+    <input
+        type="text"
+        id="username"
+        placeholder="Enter username"
+    >
+
+    <button onclick="addUser()">
+        Add User
+    </button>
+
+
+    <h2>Users</h2>
+
+    <button onclick="loadUsers()">
+        Refresh Users
+    </button>
+
+    <ul id="userList"></ul>
+
+
+    <script>
+
+        // -----------------------------
+        // Get all users
+        // -----------------------------
+
+        async function loadUsers() {
+
+            const response = await fetch("/users");
+
+            const users = await response.json();
+
+            const userList = document.getElementById("userList");
+
+            userList.innerHTML = "";
+
+            users.forEach(user => {
+
+                const li = document.createElement("li");
+
+                li.innerHTML = `
+                    ${user.username}
+                    <button onclick="deleteUser(${user.id})">
+                        Delete
+                    </button>
+                `;
+
+                userList.appendChild(li);
+            });
+        }
+
+
+        // -----------------------------
+        // Add a user
+        // -----------------------------
+
+        async function addUser() {
+
+            const input = document.getElementById("username");
+
+            const username = input.value;
+
+            if (!username) {
+                return;
+            }
+
+            await fetch("/users", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    username: username
+                })
+            });
+
+            input.value = "";
+
+            loadUsers();
+        }
+
+
+        // -----------------------------
+        // Delete a user
+        // -----------------------------
+
+        async function deleteUser(id) {
+
+            await fetch(`/users/${id}`, {
+
+                method: "DELETE"
+            });
+
+            loadUsers();
+        }
+
+
+        // Load users when page opens
+        loadUsers();
+
+    </script>
+
+</body>
+</html>
