@@ -9,9 +9,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# --------------------------------------------------
 # Database Configuration
-# --------------------------------------------------
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
@@ -29,9 +27,7 @@ SessionLocal = sessionmaker(
 Base = declarative_base()
 
 
-# --------------------------------------------------
 # Database Model
-# --------------------------------------------------
 
 class User(Base):
     __tablename__ = "users"
@@ -44,33 +40,26 @@ class User(Base):
 Base.metadata.create_all(bind=engine)
 
 
-# --------------------------------------------------
 # FastAPI Application
-# --------------------------------------------------
 
 app = FastAPI()
 
 
-# --------------------------------------------------
 # Request Model
-# --------------------------------------------------
 
 class UserCreate(BaseModel):
     username: str
 
 
-# --------------------------------------------------
 # Frontend
-# --------------------------------------------------
 
 @app.get("/")
 def home():
     return FileResponse("static/index.html")
 
 
-# --------------------------------------------------
 # GET /users
-# --------------------------------------------------
+
 
 @app.get("/users")
 def get_users():
@@ -91,9 +80,8 @@ def get_users():
         db.close()
 
 
-# --------------------------------------------------
 # POST /users
-# --------------------------------------------------
+
 
 @app.post("/users")
 def create_user(user: UserCreate):
@@ -115,9 +103,7 @@ def create_user(user: UserCreate):
         db.close()
 
 
-# --------------------------------------------------
 # DELETE /users/{id}
-# --------------------------------------------------
 
 @app.delete("/users/{id}")
 def delete_user(id: int):
